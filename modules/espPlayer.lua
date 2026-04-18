@@ -117,7 +117,10 @@ local function applyESPToAllPlayers()
     for _, plr in pairs(Players:GetPlayers()) do
         if plr ~= player and plr.Character then
             setupESP(plr.Character)
-            createNameTag(plr, plr.Character)  -- ✅ Add name tags
+            local head = plr.Character:FindFirstChild("Head")
+            if head then
+                createNameTag(plr, head)
+            end
         end
     end
 end
