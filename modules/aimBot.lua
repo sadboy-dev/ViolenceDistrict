@@ -4,7 +4,7 @@ local Workspace = game:GetService("Workspace")
 local player = Players.LocalPlayer
 local camera = Workspace.CurrentCamera
 
-local MAX_RANGE = 100
+local MAX_RANGE = 30
 local UPDATE_RATE = 1/30 -- 30 FPS
 local lastUpdate = 0
 
