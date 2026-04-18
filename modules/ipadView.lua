@@ -41,15 +41,16 @@ local function createCrosshair()
     screenGui.Parent = game.CoreGui -- Always on top
     
     crosshairLabel = Instance.new("TextLabel")
-    crosshairLabel.Size = UDim2.new(0, 8, 0, 8)
-    crosshairLabel.Position = UDim2.new(0.5, -4, 0.5, -4)
-    crosshairLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
-    crosshairLabel.BackgroundTransparency = 0.2
+    crosshairLabel.Size = UDim2.new(0, 4, 0, 4)
+    crosshairLabel.Position = UDim2.new(0.5, -2, 0.5, -2)
+    crosshairLabel.BackgroundTransparency = 1
     crosshairLabel.BorderSizePixel = 0
-    crosshairLabel.Font = Enum.Font.SourceSans
-    crosshairLabel.Text = "●"
+    crosshairLabel.Font = Enum.Font.SourceSansBold
+    crosshairLabel.Text = "•"
     crosshairLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
-    crosshairLabel.TextScaled = true
+    crosshairLabel.TextSize = 20
+    crosshairLabel.TextStrokeTransparency = 0
+    crosshairLabel.TextStrokeColor3 = Color3.new(0,0,0)
     crosshairLabel.Parent = screenGui
 end
 

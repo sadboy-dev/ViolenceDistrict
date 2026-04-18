@@ -87,7 +87,7 @@ local function updateAim()
     if now - lastUpdate < UPDATE_RATE then return end
     lastUpdate = now
     
-    if not _G.FeatureState.aimBot then 
+if not _G.FeatureState or not _G.FeatureState.aimBot then 
         if lastTarget then
             lastTarget = nil
         end
