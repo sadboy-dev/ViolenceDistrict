@@ -1,4 +1,4 @@
-local Players = game:GetService("Players")
+xlocal Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local player = Players.LocalPlayer
@@ -6,7 +6,7 @@ local player = Players.LocalPlayer
 local detectedActivities = {}
 
 local HttpService = game:GetService("HttpService")
-local filename = "ai_data.json"
+local filename = getgenv().AI_DATA_FILE or "ai_data.json"
 
 -- Load existing data
 local aiData = {}
@@ -16,6 +16,7 @@ pcall(function()
         aiData = HttpService:JSONDecode(dataStr)
     end
 end)
+print("📂 AI data loaded:", #detectedActivities, "entries")
 detectedActivities = aiData.activities or {}
 
 local function logActivity(plr, activity, details)
@@ -37,6 +38,7 @@ local function logActivity(plr, activity, details)
         pcall(function()
             writefile(filename, HttpService:JSONEncode(fullData))
         end)
+        print("💾 AI data saved:", #detectedActivities, "entries to", filename)
     end)
 end
 
