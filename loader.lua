@@ -14,6 +14,7 @@ local modulesToLoad = {
     "modules/autoGene.lua",
     "modules/ai.lua",
     "modules/autoHeal.lua",
+    "modules/aimBot.lua",
     -- "modules/autofarm.lua",
     -- tambahkan fitur lain di sini
 }

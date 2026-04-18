@@ -12,6 +12,7 @@ _G.FeatureState = _G.FeatureState or {
     autoGene = false,
     autoHeal = false,
     ai = false,
+    aimBot = false,
     -- Tambahkan fitur baru di sini
 }
 
@@ -47,6 +48,7 @@ function _G.SortFeaturesByRole()
         _G.Toggle("autoGene", true)
         _G.Toggle("autoHeal", true)
         _G.Toggle("ai", true)
+        _G.Toggle("aimBot", true)
 
     elseif currentRole == "KILLER" then
         _G.Toggle("espPlayer", true)
