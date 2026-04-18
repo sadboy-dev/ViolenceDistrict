@@ -49,8 +49,11 @@ function _G.SortFeaturesByRole()
         _G.Toggle("aimBot", true)
 
     elseif currentRole == "KILLER" then
+        _G.Toggle("ipadView", true)
         _G.Toggle("espPlayer", true)
+        _G.Toggle("espGenerator", true)
         _G.Toggle("generatorProgress", true)
+        _G.Toggle("aimBot", true)
 
     elseif currentRole == "SPECTATOR" then
         _G.Toggle("ipadView", true)
