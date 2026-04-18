@@ -193,7 +193,8 @@ RunService.Heartbeat:Connect(function()  -- ✅ THROTTLE 30fps
     for _, plr in pairs(Players:GetPlayers()) do
         if plr ~= player and plr.Character then
             local h = plr.Character:FindFirstChild("ESP")
-            local headTag = plr.Character.Head and plr.Character.Head:FindFirstChild("NameTag")
+            local head = plr.Character:FindFirstChild("Head")
+            local headTag = head and head:FindFirstChild("NameTag")
             local label = headTag and headTag:FindFirstChild("TextLabel")
             
             if h then
