@@ -101,9 +101,10 @@ local function updateAim()
     end
     
     if target and lastTarget == target then
-        -- Smooth lerp no shake
+
+        -- Ultra smooth no vibration
         local targetCFrame = CFrame.lookAt(camera.CFrame.Position, target.Position)
-        camera.CFrame = camera.CFrame:Lerp(targetCFrame, 0.3)
+        camera.CFrame = camera.CFrame:Lerp(targetCFrame, 0.15)
     end
 end
 
