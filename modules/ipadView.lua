@@ -35,7 +35,7 @@ end
 
 local function createCrosshair()
     cleanupCrosshair()
-    screenGui = _InstanceNew("ScreenGui")
+    screenGui = Instance.new("ScreenGui")
     screenGui.IgnoreGuiInset = true
     screenGui.Parent = game.CoreGui -- Always on top
     
@@ -47,7 +47,7 @@ local function createCrosshair()
     crosshairLabel.BackgroundColor3 = Color3.new(1, 1, 1)
     crosshairLabel.BackgroundTransparency = 0.3
     crosshairLabel.BorderSizePixel = 0
-    crosshairLabel.Visible = CrosshairVisible
+    crosshairLabel.Visible = true
     crosshairLabel.Parent = screenGui
 
     local corner = Instance.new("UICorner")
