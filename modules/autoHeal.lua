@@ -40,14 +40,13 @@ local function getClosestLowHealthTeammate(root)
 end
 
 RunService.Heartbeat:Connect(function()
-    if not _G.FeatureState.autoHeal then return end
-    
-    local role = _G.RoleData and string.upper(_G.RoleData.TeamName or "") or ""
-    if role ~= "SURVIVORS" then return end
+_G.FeatureState.autoHeal then return end
+    -- Role check inside functions
 
     local char = player.Character
-    local root = char and char:FindFirstChild("HumanoidRootPart")
-    local hum = char and char:FindFirstChild("Humanoid")
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    local hum = char:FindFirstChild("Humanoid")
     if not root or not hum then return end
 
     local isMoving = hum.MoveDirection.Magnitude > 0.05

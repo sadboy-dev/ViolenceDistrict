@@ -46,32 +46,8 @@ local function getClosestGeneratorPoint(root)
     return closestGen, closestPoint, closestDist
 end
 
--- Heal detection
-local function isHealing()
-    -- Check tool
-    for _, tool in pairs(char:GetChildren()) do
-        if tool:IsA("Tool") and (tool.Name:lower():find("medkit") or tool.Name:lower():find("heal")) then
-            return true
-        end
-    end
-    
-    -- Check near teammate low health (raycast simplified)
-    local camera = workspace.CurrentCamera
-    local ray = camera:ScreenPointToRay(workspace.CurrentCamera.ViewportSize.X/2, workspace.CurrentCamera.ViewportSize.Y/2)
-    local raycastParams = RaycastParams.new()
-    raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
-    raycastParams.FilterDescendantsInstances = {char}
-    
-    local result = workspace:Raycast(ray.Origin, ray.Direction * 50, raycastParams)
-    if result and result.Instance then
-        local hitChar = result.Instance:FindFirstAncestorOfClass("Model")
-        if hitChar and hitChar ~= char and Players:GetPlayerFromCharacter(hitChar) then
-            local hum = hitChar:FindFirstChild("Humanoid")
-            if hum and hum.Health < hum.MaxHealth * 0.8 then -- 80% health
-                return true
-            end
-        end
-    end
+-- Remove heal detection - now separate autoHeal.lua
+local function noHealDetection()
     return false
 end
 
@@ -89,7 +65,7 @@ RunService.Heartbeat:Connect(function()
     local root = char and char:FindFirstChild("HumanoidRootPart")
     if not root then return end
 
-    if isHealing() then return end -- Skip if healing
+    -- Pure gen - no heal interference
 
     local genModel, genPoint, dist = getClosestGeneratorPoint(root)
     

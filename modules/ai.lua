@@ -10,12 +10,12 @@ local filename = "ai_data.json"
 
 -- Load existing data
 local aiData = {}
-local success, dataStr = pcall(function()
-    return readfile(filename)
+pcall(function()
+    local dataStr = readfile(filename)
+    if dataStr and dataStr ~= "" then
+        aiData = HttpService:JSONDecode(dataStr)
+    end
 end)
-if success and dataStr ~= "" then
-    aiData = HttpService:JSONDecode(dataStr)
-end
 detectedActivities = aiData.activities or {}
 
 local function logActivity(plr, activity, details)
