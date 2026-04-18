@@ -11,7 +11,7 @@ local modulesToLoad = {
     "modules/ipadView.lua",
     "modules/espPlayer.lua",
     "modules/espGene.lua",
-    "modules/autoGene.lua",  -- ✅ Auto generator skillcheck
+    "modules/autoGene.lua",
     -- "modules/autofarm.lua",
     -- tambahkan fitur lain di sini
 }
@@ -22,32 +22,24 @@ local function formatModuleName(path)
     return name:gsub("^%l", string.upper)
 end
 
-local function safeLoadModule(path)
-    -- SIMPEL: Local ONLY (fastest, no error)
-    pcall(function()
-        local content = readfile(path)
-        loadstring(content)()
-        print("✅ Loaded local: " .. formatModuleName(path))
-    end)
-end
-
--- Load semua modules dengan retry
-print("🚀 Loading modules...")
+-- Load semua modules terlebih dahulu
 for _, path in ipairs(modulesToLoad) do
-    safeLoadModule(path)
-    task.wait(0.3)  -- Stabil loading
+    local success, err = pcall(function()
+        loadstring(game:HttpGet(baseUrl .. path))()
+    end)
+    
+    if success then
+        print("✅ Loaded: " .. formatModuleName(path))
+    else
+        warn("❌ Loaded: " .. formatModuleName(path) .. " | Error: " .. tostring(err))
+    end
+    task.wait(0.4)  -- jeda agar stabil
 end
-print("✅ All modules loaded!")
-
--- Tunggu semua module stabil
-task.wait(1)
 
 local mainSuccess, mainErr = pcall(function()
-    loadstring(game:HttpGet(baseUrl .. "main.lua", true))()  -- ✅ cache
+    loadstring(game:HttpGet(baseUrl .. "main.lua"))()
 end)
 
-if mainSuccess then
-    print("🎉 Main script loaded successfully!")
-else
-    warn("❌ Gagal load main.lua setelah retry: " .. tostring(mainErr))
+if not mainSuccess then
+    warn("❌ Gagal memuat main.lua: " .. tostring(mainErr))
 end

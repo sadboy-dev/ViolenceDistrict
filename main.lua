@@ -1,20 +1,16 @@
 -- main.lua
--- ✅ EARLY INIT: cegah race condition
-_G.FeatureState = _G.FeatureState or {
-    ipadView = false,
-    espPlayer = false,
-    espGenerator = false,
-    generatorProgress = false,
-    autoGene = false
-}
+if not _G.RoleData or not _G.RoleUpdate then
+    error("❌ getRole.lua belum terdeteksi! Pastikan loader berjalan benar.")
+end
 
--- Skip check, getRole auto-run
+-- Tabel global untuk menyimpan status ON/OFF semua fitur
 _G.FeatureState = _G.FeatureState or {
     ipadView = false,
     espPlayer = false,
     espGenerator = false,
     generatorProgress = false,
-    autoGene = false
+    autoGene = false,
+    -- Tambahkan fitur baru di sini
 }
 
 local function formatFeatureName(name)
@@ -46,11 +42,10 @@ function _G.SortFeaturesByRole()
         _G.Toggle("espPlayer", true)
         _G.Toggle("espGenerator", true)
         _G.Toggle("generatorProgress", true)
-        _G.Toggle("autoGene", true)  -- ✅ Auto skillcheck generators
+        _G.Togle("autoGene", true)
 
     elseif currentRole == "KILLER" then
         _G.Toggle("espPlayer", true)
-        -- _G.Toggle("espGenerator", true)
         _G.Toggle("generatorProgress", true)
 
     elseif currentRole == "SPECTATOR" then
