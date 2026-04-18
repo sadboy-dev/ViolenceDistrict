@@ -38,6 +38,7 @@ local function createCrosshair()
     
     screenGui = Instance.new("ScreenGui")
     screenGui.Name = "IpadCrosshair"
+    screenGui.IgnoreGuiInset = true
     screenGui.Parent = game.CoreGui -- Always on top
     
     crosshairLabel = Instance.new("Frame")
