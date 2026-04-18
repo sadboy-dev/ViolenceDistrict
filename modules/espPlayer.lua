@@ -15,6 +15,41 @@ local wasEnabled = false
 -- ==============================================
 -- SETUP ESP
 -- ==============================================
+local function createNameTag(plr, char)
+    local head = char:FindFirstChild("Head")
+    if not head then return end
+    
+    -- Cleanup old
+    local oldTag = head:FindFirstChild("NameTag")
+    if oldTag then oldTag:Destroy() end
+    
+    local bill = Instance.new("BillboardGui")
+    bill.Name = "NameTag"
+    bill.Size = UDim2.new(0, 200, 0, 50)
+    bill.StudsOffset = Vector3.new(0, 3, 0)
+    bill.AlwaysOnTop = true
+    bill.Parent = head
+    
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextScaled = true
+    label.Font = Enum.Font.SourceSansBold
+    label.TextStrokeTransparency = 0
+    label.TextStrokeColor3 = Color3.new(0,0,0)
+    label.Parent = bill
+    
+    return bill, label
+end
+
+local function updateNameTag(plr, label)
+    local leaderstats = plr:FindFirstChild("leaderstats")
+    local levelVal = leaderstats and leaderstats:FindFirstChild("Level")
+    local level = levelVal and math.floor(levelVal.Value) or 1
+    
+    label.Text = string.format("[LVL %d] %s", level, plr.Name)
+end
+
 local function setupESP(char)
     if not char then return end
 
@@ -40,6 +75,7 @@ local function applyESPToAllPlayers()
     for _, plr in pairs(Players:GetPlayers()) do
         if plr ~= player and plr.Character then
             setupESP(plr.Character)
+            createNameTag(plr, plr.Character)  -- ✅ Add name tags
         end
     end
 end
@@ -48,6 +84,8 @@ local function removeESPFromAllPlayers()
     for _, plr in pairs(Players:GetPlayers()) do
         if plr.Character then
             removeESP(plr.Character)
+            local headTag = plr.Character.Head and plr.Character.Head:FindFirstChild("NameTag")
+            if headTag then headTag:Destroy() end  -- ✅ Cleanup name tags
         end
     end
 end
@@ -96,6 +134,7 @@ local function handlePlayer(plr)
         task.wait(0.5)
         if _G.FeatureState and _G.FeatureState.espPlayer then
             setupESP(char)
+            createNameTag(plr, char)  -- ✅ Add name tag
         end
     end)
     table.insert(connections, charAddedConn)
@@ -122,24 +161,35 @@ RunService.Heartbeat:Connect(function()  -- ✅ THROTTLE 30fps
     for _, plr in pairs(Players:GetPlayers()) do
         if plr ~= player and plr.Character then
             local h = plr.Character:FindFirstChild("ESP")
+            local headTag = plr.Character.Head and plr.Character.Head:FindFirstChild("NameTag")
+            local label = headTag and headTag:FindFirstChild("TextLabel")
+            
             if h then
                 local role = getPlayerRole(plr)
                 local targetColor
                 
                 if role == "KILLER" then
                     targetColor = Color3.fromRGB(255, 0, 0)
+                    if label then label.TextColor3 = targetColor end
                 elseif role == "SURVIVORS" then
                     targetColor = Color3.fromRGB(0, 170, 255)
+                    if label then label.TextColor3 = targetColor end
                 elseif role == "SPECTATOR" then
                     targetColor = Color3.fromRGB(255, 255, 255)
+                    if label then label.TextColor3 = targetColor end
                 else
                     targetColor = Color3.fromRGB(128, 128, 128)
+                    if label then label.TextColor3 = targetColor end
                 end
 
-                -- ✅ OPTIMIZE: Hanya update jika warnanya beda
                 if h.FillColor ~= targetColor then
                     h.FillColor = targetColor
                 end
+            end
+            
+            -- Update name tag
+            if label then
+                updateNameTag(plr, label)
             end
         end
     end
