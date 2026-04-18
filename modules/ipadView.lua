@@ -47,12 +47,7 @@ local function createCrosshair()
     crosshairLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
     crosshairLabel.BackgroundTransparency = 1
     crosshairLabel.BorderSizePixel = 0
-    crosshairLabel.Font = Enum.Font.SourceSansBold
-    crosshairLabel.Text = "•"
-    crosshairLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
-    crosshairLabel.TextSize = 24
-    crosshairLabel.TextStrokeTransparency = 0
-    crosshairLabel.TextStrokeColor3 = Color3.new(0,0,0)
+    crosshairLabel.BackgroundColor3 = Color3.FromRGB(255,255,0)
     crosshairLabel.Parent = screenGui
 end
 
