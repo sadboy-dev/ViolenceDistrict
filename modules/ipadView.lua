@@ -1,10 +1,6 @@
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
-local _Instance = Instance.new
-local _Vector2New = Vector2.new
-local _UDim2New = UDim2.new
-local _Color3FromRGB = Color3.fromRGB
 
 local IPAD_FOV = 100
 local originalFOV = nil
