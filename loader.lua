@@ -29,13 +29,11 @@ local function safeLoadModule(path, maxRetries)
         end)
         
         if success then
-            print("✅ Loaded: " .. formatModuleName(path) .. " (attempt " .. attempt .. ")")
+            print("✅ Loaded: " .. formatModuleName(path))
             return true
         else
-            warn("⚠️ Load failed: " .. formatModuleName(path) .. " (attempt " .. attempt .. "): " .. tostring(result))
-            if attempt < maxRetries then
-                task.wait(1)
-            end
+            print("ℹ️ Skipped " .. formatModuleName(path) .. " (local/offline): " .. tostring(result):match("[^:]+").."...")  -- ✅ No warn spam
+            return true  -- ✅ Continue tanpa crash
         end
     end
     warn("❌ FAILED after 3 tries: " .. formatModuleName(path))

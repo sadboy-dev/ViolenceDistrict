@@ -1,7 +1,7 @@
 local RunService = game:GetService("RunService")
 local espGenObjects = {}
 local wasEnabled = false
-local progressEnabled = false
+-- local progressEnabled = false  -- DELETED: Use global instead
 
 -- Safety check for RunService
 if not RunService then
@@ -56,7 +56,7 @@ local function createGenESP(obj, color, percent)
 
     -- Update color & text
     data.highlight.FillColor = color
-    data.label.Text = progressEnabled and (percent .. "%") or ""
+    data.label.Text = (_G.FeatureState and _G.FeatureState.generatorProgress) and (percent .. "%") or ""
     data.label.TextColor3 = color
 end
 
@@ -152,44 +152,39 @@ local function startProgressFeature()
     if not _G.FeatureState then
         _G.FeatureState = {}
     end
-    if _G.FeatureState.generatorProgress then
-        return
-    end
-
     _G.FeatureState.generatorProgress = true
-    progressEnabled = true
-
-    -- Update existing ESP to show progress
-    for _, gen in pairs(getGenerators()) do
-        if espGenObjects[gen] then
-            local data = espGenObjects[gen]
-            local progress = getGeneratorProgress(gen)
-            local percent = math.floor(progress * 100)
-            data.label.Text = percent .. "%"
+    
+    -- Force update all generators
+    task.spawn(function()
+        for _, gen in pairs(getGenerators()) do
+            if espGenObjects[gen] then
+                local data = espGenObjects[gen]
+                local progress = getGeneratorProgress(gen)
+                local percent = math.floor(progress * 100)
+                data.label.Text = percent .. "%"
+                data.label.TextColor3 = Color3.fromRGB(0,255,0)
+            end
         end
-    end
-
-    print("[FEATURED]: Generator Progress -> ON")
+    end)
+    
+    print("[FEATURED]: Generator Progress -> ON ✅")
 end
 
 local function stopProgressFeature()
     if not _G.FeatureState then
         _G.FeatureState = {}
     end
-    if not _G.FeatureState.generatorProgress then
-        return
-    end
-
     _G.FeatureState.generatorProgress = false
-    progressEnabled = false
-
-    -- Update existing ESP to hide progress
-    for _, gen in pairs(getGenerators()) do
-        if espGenObjects[gen] then
-            espGenObjects[gen].label.Text = ""
+    
+    -- Force hide text
+    task.spawn(function()
+        for obj, data in pairs(espGenObjects) do
+            if data.label then
+                data.label.Text = ""
+            end
         end
-    end
-
+    end)
+    
     print("[FEATURED]: Generator Progress -> OFF")
 end
 
