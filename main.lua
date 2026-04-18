@@ -5,6 +5,7 @@ _G.FeatureState = _G.FeatureState or {
     espPlayer = false,
     espGenerator = false,
     generatorProgress = false,
+    autoGene = false,  -- ✅ Auto generator skillcheck
     boostFps = false,
     crosshair = false,
 }
@@ -50,6 +51,7 @@ function _G.SortFeaturesByRole()
         _G.Toggle("espPlayer", true)
         _G.Toggle("espGenerator", true)
         _G.Toggle("generatorProgress", true)
+        _G.Toggle("autoGene", true)  -- ✅ Auto skillcheck generators
 
     elseif currentRole == "KILLER" then
         _G.Toggle("espPlayer", true)

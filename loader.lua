@@ -11,6 +11,7 @@ local modulesToLoad = {
     "modules/ipadView.lua",
     "modules/espPlayer.lua",
     "modules/espGene.lua",
+    "modules/autoGene.lua",  -- ✅ Auto generator skillcheck
     -- "modules/autofarm.lua",
     -- tambahkan fitur lain di sini
 }
