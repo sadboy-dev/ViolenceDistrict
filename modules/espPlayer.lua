@@ -25,15 +25,16 @@ local function createNameTag(plr, char)
     
     local bill = Instance.new("BillboardGui")
     bill.Name = "NameTag"
-    bill.Size = UDim2.new(0, 200, 0, 50)
-    bill.StudsOffset = Vector3.new(0, 3, 0)
+    bill.Size = UDim2.new(0, 100, 0, 40)  -- Samakan generator
+    bill.StudsOffset = Vector3.new(0, 2.5, 0)
     bill.AlwaysOnTop = true
     bill.Parent = head
     
     local label = Instance.new("TextLabel")
     label.Size = UDim2.new(1, 0, 1, 0)
     label.BackgroundTransparency = 1
-    label.TextScaled = true
+    label.TextScaled = false
+    label.TextSize = 14  -- Samakan generator
     label.Font = Enum.Font.SourceSansBold
     label.TextStrokeTransparency = 0
     label.TextStrokeColor3 = Color3.new(0,0,0)
@@ -42,11 +43,34 @@ local function createNameTag(plr, char)
     return bill, label
 end
 
-local function updateNameTag(plr, label)
+local function getPlayerLevel(plr)
     local leaderstats = plr:FindFirstChild("leaderstats")
-    local levelVal = leaderstats and leaderstats:FindFirstChild("Level")
-    local level = levelVal and math.floor(levelVal.Value) or 1
+    if leaderstats then
+        -- Try multiple level names
+        for _, levelName in ipairs({"Level", "level", "LevelValue", "Lvl"}) do
+            local levelVal = leaderstats:FindFirstChild(levelName)
+            if levelVal and levelVal:IsA("IntValue") or levelVal:IsA("NumberValue") then
+                return math.floor(levelVal.Value)
+            end
+        end
+    end
+    return 1  -- Default
+end
+
+local playerLevelCache = {}
+local lastLevelUpdate = {}
+
+local function updateNameTag(plr, label)
+    local plrId = plr.UserId
+    local now = tick()
     
+    -- Cache 2s debounce
+    if not playerLevelCache[plrId] or now - (lastLevelUpdate[plrId] or 0) > 2 then
+        playerLevelCache[plrId] = getPlayerLevel(plr)
+        lastLevelUpdate[plrId] = now
+    end
+    
+    local level = playerLevelCache[plrId] or 1
     label.Text = string.format("[LVL %d] %s", level, plr.Name)
 end
 
@@ -201,12 +225,15 @@ end)
 local playerConnections = {}
 
 local function cleanupPlayer(plr)
+    local plrId = plr.UserId
     if playerConnections[plr] then
         for _, conn in pairs(playerConnections[plr]) do
             conn:Disconnect()
         end
         playerConnections[plr] = nil
     end
+    playerLevelCache[plrId] = nil  -- ✅ Cleanup cache
+    lastLevelUpdate[plrId] = nil
 end
 
 Players.PlayerRemoving:Connect(cleanupPlayer)  -- ✅ CLEANUP
