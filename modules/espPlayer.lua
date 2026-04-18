@@ -44,17 +44,25 @@ local function createNameTag(plr, char)
 end
 
 local function getPlayerLevel(plr)
-    local leaderstats = plr:FindFirstChild("leaderstats")
+    -- Advanced leaderstats scan
+    local leaderstats = plr:WaitForChild("leaderstats", 3)
     if leaderstats then
-        -- Try multiple level names
-        for _, levelName in ipairs({"Level", "level", "LevelValue", "Lvl"}) do
-            local levelVal = leaderstats:FindFirstChild(levelName)
-            if levelVal and levelVal:IsA("IntValue") or levelVal:IsA("NumberValue") then
-                return math.floor(levelVal.Value)
+        for _, stat in ipairs(leaderstats:GetChildren()) do
+            local name = stat.Name:lower()
+            if name:find("level") and (stat:IsA("IntValue") or stat:IsA("NumberValue")) then
+                return math.floor(stat.Value)
             end
         end
     end
-    return 1  -- Default
+    -- Fallback common names
+    pcall(function()
+        local stats = plr.PlayerGui:FindFirstChild("PlayerFrame", true)
+        if stats then
+            local lvl = stats:FindFirstChild("Level", true)
+            if lvl then return tonumber(lvl.Text:match("%d+")) or 1 end
+        end
+    end)
+    return 1
 end
 
 local playerLevelCache = {}
