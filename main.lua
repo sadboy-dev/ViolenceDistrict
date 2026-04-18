@@ -42,7 +42,7 @@ function _G.SortFeaturesByRole()
         _G.Toggle("espPlayer", true)
         _G.Toggle("espGenerator", true)
         _G.Toggle("generatorProgress", true)
-        _G.Togle("autoGene", true)
+        _G.Toggle("autoGene", true)
 
     elseif currentRole == "KILLER" then
         _G.Toggle("espPlayer", true)
