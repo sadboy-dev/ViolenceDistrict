@@ -19,6 +19,40 @@ local function applyFOV()
     end
 end
 
+local screenGui = nil
+local crosshairLabel = nil
+
+local function cleanupCrosshair()
+    if crosshairLabel then
+        crosshairLabel:Destroy()
+        crosshairLabel = nil
+    end
+    if screenGui then
+        screenGui:Destroy()
+        screenGui = nil
+    end
+end
+
+local function createCrosshair()
+    cleanupCrosshair()
+    
+    screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "IpadCrosshair"
+    screenGui.Parent = game.CoreGui -- Always on top
+    
+    crosshairLabel = Instance.new("TextLabel")
+    crosshairLabel.Size = UDim2.new(0, 8, 0, 8)
+    crosshairLabel.Position = UDim2.new(0.5, -4, 0.5, -4)
+    crosshairLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+    crosshairLabel.BackgroundTransparency = 0.2
+    crosshairLabel.BorderSizePixel = 0
+    crosshairLabel.Font = Enum.Font.SourceSans
+    crosshairLabel.Text = "●"
+    crosshairLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+    crosshairLabel.TextScaled = true
+    crosshairLabel.Parent = screenGui
+end
+
 local function restoreFOV()
     if workspace.CurrentCamera and originalFOV then
         workspace.CurrentCamera.FieldOfView = originalFOV
@@ -35,8 +69,10 @@ RunService.Heartbeat:Connect(function()
         if enabled then
             cacheOriginalFOV()
             workspace.CurrentCamera.FieldOfView = IPAD_FOV
+            createCrosshair()
         else
             restoreFOV()
+            cleanupCrosshair()
         end
         return
     end
