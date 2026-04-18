@@ -12,7 +12,6 @@ local modulesToLoad = {
     "modules/espPlayer.lua",
     "modules/espGene.lua",
     "modules/autoGene.lua",
-    "modules/ai.lua",
     "modules/autoHeal.lua",
     "modules/aimBot.lua",
     -- "modules/autofarm.lua",
