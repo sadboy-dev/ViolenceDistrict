@@ -5,7 +5,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local healRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Healing"):WaitForChild("SkillCheckResultEvent")
+local healRemote = ReplicatedStorage.Remotes.Healing.SkillCheckResultEvent
 
 local lastHealTarget = nil
 local wasEnabled = false
@@ -78,6 +78,7 @@ RunService.Heartbeat:Connect(function()
                     end
                 end
             end
+            print("💉 Heal check detected") -- Debug log
             -- No target: do nothing, don't fire gen remote
         end
     end
