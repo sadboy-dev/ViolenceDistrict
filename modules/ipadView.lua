@@ -34,8 +34,9 @@ local function cleanupCrosshair()
 end
 
 local function createCrosshair()
-    cleanupCrosshair()
-    
+    if cleanupCrosshair then
+        cleanupCrosshair()
+    end
     screenGui = Instance.new("ScreenGui")
     screenGui.Name = "IpadCrosshair"
     screenGui.IgnoreGuiInset = true
@@ -70,7 +71,9 @@ RunService.Heartbeat:Connect(function()
             createCrosshair()
         else
             restoreFOV()
-            cleanupCrosshair()
+            if cleanupCrosshair then
+                cleanupCrosshair()
+            end
         end
         return
     end
