@@ -3,7 +3,7 @@ if _G.__LOADER then return end
 _G.__LOADER = true
 
 -- loader.lua
-local baseUrl = "https://raw.githubusercontent.com/sadboy-dev/Pidi/main/"   -- GANTI DENGAN REPO KAMU
+local baseUrl = "https://raw.githubusercontent.com/sadboy-dev/ViolenceDistrict/main/"   -- GANTI DENGAN REPO KAMU
 
 -- Daftar modules yang ingin di-load (bisa tambah banyak)
 local modulesToLoad = {
