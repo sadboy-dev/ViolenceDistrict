@@ -1,6 +1,10 @@
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
+local _Instance = Instance.new
+local _Vector2New = Vector2.new
+local _UDim2New = UDim2.new
+local _Color3FromRGB = Color3.fromRGB
 
 local IPAD_FOV = 100
 local originalFOV = nil
@@ -37,19 +41,18 @@ local function createCrosshair()
     if cleanupCrosshair then
         cleanupCrosshair()
     end
-    screenGui = Instance.new("ScreenGui")
+    screenGui = _InstanceNew("ScreenGui")
     screenGui.Name = "IpadCrosshair"
     screenGui.IgnoreGuiInset = true
     screenGui.Parent = game.CoreGui -- Always on top
     
-    crosshairLabel = Instance.new("Frame")
-    crosshairLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-    crosshairLabel.Size = UDim2.new(0, 6, 0, 6)
-    crosshairLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+    crosshairLabel = _InstanceNew("Frame")
+    crosshairLabel.AnchorPoint = _Vector2New(0.5, 0.5)
+    crosshairLabel.Size = _UDim2New(0, 6, 0, 6)
+    crosshairLabel.Position = _UDim2New(0.5, 0, 0.5, 0)
     crosshairLabel.BackgroundTransparency = 1
     crosshairLabel.BorderSizePixel = 0
-    crosshairLabel.BackgroundColor3 = Color3.FromRGB(255,255,0)
-    crosshairLabel.Parent = screenGui
+    crosshairLabel.BackgroundColor3 = _Color3FromRGB(255, 255, 0)
 end
 
 local function restoreFOV()
