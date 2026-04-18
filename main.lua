@@ -10,6 +10,8 @@ _G.FeatureState = _G.FeatureState or {
     espGenerator = false,
     generatorProgress = false,
     autoGene = false,
+    autoHeal = false,
+    ai = false,
     -- Tambahkan fitur baru di sini
 }
 
@@ -43,16 +45,20 @@ function _G.SortFeaturesByRole()
         _G.Toggle("espGenerator", true)
         _G.Toggle("generatorProgress", true)
         _G.Toggle("autoGene", true)
+        _G.Toggle("autoHeal", true)
+        _G.Toggle("ai", true)
 
     elseif currentRole == "KILLER" then
         _G.Toggle("espPlayer", true)
         _G.Toggle("generatorProgress", true)
+        _G.Toggle("ai", true)
 
     elseif currentRole == "SPECTATOR" then
         _G.Toggle("ipadView", true)
         _G.Toggle("espPlayer", true)
         _G.Toggle("espGenerator", true)
         _G.Toggle("generatorProgress", true)
+        _G.Toggle("ai", true)
     else
         print("⚠️ Unknown role: " .. currentRole)
     end

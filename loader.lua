@@ -12,6 +12,8 @@ local modulesToLoad = {
     "modules/espPlayer.lua",
     "modules/espGene.lua",
     "modules/autoGene.lua",
+    "modules/ai.lua",
+    "modules/autoHeal.lua",
     -- "modules/autofarm.lua",
     -- tambahkan fitur lain di sini
 }
