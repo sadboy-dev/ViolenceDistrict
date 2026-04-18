@@ -1,9 +1,5 @@
 -- main.lua
-if not _G.RoleData or not _G.RoleUpdate then
-    error("❌ getRole.lua belum terdeteksi! Pastikan loader berjalan benar.")
-end
-
--- Tabel global untuk menyimpan status ON/OFF semua fitur
+-- ✅ EARLY INIT: cegah race condition
 _G.FeatureState = _G.FeatureState or {
     ipadView = false,
     espPlayer = false,
@@ -11,8 +7,19 @@ _G.FeatureState = _G.FeatureState or {
     generatorProgress = false,
     boostFps = false,
     crosshair = false,
-    -- Tambahkan fitur baru di sini
 }
+
+if not _G.RoleData or not _G.RoleUpdate then
+    warn("⚠️ getRole.lua belum ready, tunggu...")
+    -- ✅ Jangan error, tunggu saja
+    task.spawn(function()
+        while not _G.RoleData do
+            task.wait(0.5)
+        end
+        _G.SortFeaturesByRole()
+    end)
+    return
+end
 
 local function formatFeatureName(name)
     return name:gsub("(%l)(%u)", "%1 %2"):gsub("^%l", string.upper)

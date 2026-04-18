@@ -21,24 +21,44 @@ local function formatModuleName(path)
     return name:gsub("^%l", string.upper)
 end
 
--- Load semua modules terlebih dahulu
-for _, path in ipairs(modulesToLoad) do
-    local success, err = pcall(function()
-        loadstring(game:HttpGet(baseUrl .. path))()
-    end)
-    
-    if success then
-        print("✅ Loaded: " .. formatModuleName(path))
-    else
-        warn("❌ Loaded: " .. formatModuleName(path) .. " | Error: " .. tostring(err))
+local function safeLoadModule(path, maxRetries)
+    maxRetries = maxRetries or 3
+    for attempt = 1, maxRetries do
+        local success, result = pcall(function()
+            return loadstring(game:HttpGet(baseUrl .. path, true))()  -- ✅ cache + timeout
+        end)
+        
+        if success then
+            print("✅ Loaded: " .. formatModuleName(path) .. " (attempt " .. attempt .. ")")
+            return true
+        else
+            warn("⚠️ Load failed: " .. formatModuleName(path) .. " (attempt " .. attempt .. "): " .. tostring(result))
+            if attempt < maxRetries then
+                task.wait(1)
+            end
+        end
     end
-    task.wait(0.4)  -- jeda agar stabil
+    warn("❌ FAILED after 3 tries: " .. formatModuleName(path))
+    return false
 end
 
+-- Load semua modules dengan retry
+print("🚀 Loading modules...")
+for _, path in ipairs(modulesToLoad) do
+    safeLoadModule(path)
+    task.wait(0.3)  -- Stabil loading
+end
+print("✅ All modules loaded!")
+
+-- Tunggu semua module stabil
+task.wait(1)
+
 local mainSuccess, mainErr = pcall(function()
-    loadstring(game:HttpGet(baseUrl .. "main.lua"))()
+    loadstring(game:HttpGet(baseUrl .. "main.lua", true))()  -- ✅ cache
 end)
 
-if not mainSuccess then
-    warn("❌ Gagal memuat main.lua: " .. tostring(mainErr))
+if mainSuccess then
+    print("🎉 Main script loaded successfully!")
+else
+    warn("❌ Gagal load main.lua setelah retry: " .. tostring(mainErr))
 end

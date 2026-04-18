@@ -23,43 +23,41 @@ local function createGenESP(obj, color, percent)
 
     local data = espGenObjects[obj]
 
-    if data then
-        data.highlight.FillColor = color
-        if progressEnabled then
-            data.label.Text = percent .. "%"
-            data.label.TextColor3 = color
-        else
-            data.label.Text = ""
-        end
-        return
+    -- ✅ ANTI-SPAM: Hanya buat jika belum ada
+    if not data then
+        local h = Instance.new("Highlight")
+        h.FillColor = color
+        h.FillTransparency = 0.5
+        h.Parent = obj
+
+        local bill = Instance.new("BillboardGui")
+        bill.Size = UDim2.new(0,100,0,40)
+        bill.AlwaysOnTop = true
+        bill.Parent = obj
+
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1,0,1,0)
+        label.BackgroundTransparency = 1
+        label.TextScaled = false
+        label.TextSize = 14
+        label.Font = Enum.Font.SourceSansBold
+        label.TextStrokeTransparency = 0
+        label.Text = progressEnabled and (percent .. "%") or ""
+        label.TextColor3 = color
+        label.Parent = bill
+
+        data = {
+            highlight = h,
+            billboard = bill,
+            label = label
+        }
+        espGenObjects[obj] = data
     end
 
-    local h = Instance.new("Highlight")
-    h.FillColor = color
-    h.FillTransparency = 0.5
-    h.Parent = obj
-
-    local bill = Instance.new("BillboardGui")
-    bill.Size = UDim2.new(0,100,0,40)
-    bill.AlwaysOnTop = true
-    bill.Parent = obj
-
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1,0,1,0)
-    label.BackgroundTransparency = 1
-    label.TextScaled = false
-    label.TextSize = 14
-    label.Font = Enum.Font.SourceSansBold
-    label.TextStrokeTransparency = 0
-    label.Text = progressEnabled and (percent .. "%") or ""
-    label.TextColor3 = color
-    label.Parent = bill
-
-    espGenObjects[obj] = {
-        highlight = h,
-        billboard = bill,
-        label = label
-    }
+    -- Update color & text
+    data.highlight.FillColor = color
+    data.label.Text = progressEnabled and (percent .. "%") or ""
+    data.label.TextColor3 = color
 end
 
 local function getGeneratorProgress(gen)
@@ -85,18 +83,25 @@ local function getGeneratorProgress(gen)
     return math.clamp(progress, 0, 1)
 end
 
+local generatorsCache = {}
+local lastCacheUpdate = 0
+
 local function getGenerators()
-    local gens = {}
-    local map = workspace:FindFirstChild("Map")
-    if not map then return gens end
-
-    for _, v in pairs(map:GetDescendants()) do
-        if v.Name == "Generator" then
-            table.insert(gens, v)
+    local now = tick()
+    -- ✅ CACHE 1 detik (tidak cari ulang terus)
+    if now - lastCacheUpdate > 1 then
+        generatorsCache = {}
+        local map = workspace:FindFirstChild("Map")
+        if map then
+            for _, v in pairs(map:GetDescendants()) do
+                if v.Name == "Generator" then
+                    table.insert(generatorsCache, v)
+                end
+            end
         end
+        lastCacheUpdate = now
     end
-
-    return gens
+    return generatorsCache
 end
 
 local function applyESPToGenerators()
@@ -194,33 +199,32 @@ end
 task.spawn(function()
     task.wait(1) -- Wait for environment to be ready
     
-    RunService.RenderStepped:Connect(function()
+RunService.Heartbeat:Connect(function()  -- ✅ THROTTLE: 30fps bukannya 60fps
         local espEnabled = _G.FeatureState and _G.FeatureState.espGenerator
         local progressEnabledCheck = _G.FeatureState and _G.FeatureState.generatorProgress
 
-        if espEnabled and not wasEnabled then
-            wasEnabled = true
-            applyESPToGenerators()
-        elseif not espEnabled and wasEnabled then
-            wasEnabled = false
-            removeESPFromGenerators()
+        if espEnabled ~= wasEnabled then
+            wasEnabled = espEnabled
+            if espEnabled then
+                applyESPToGenerators()
+            else
+                removeESPFromGenerators()
+            end
         end
 
-        if not espEnabled then
-            return
-        end
+        if not espEnabled then return end
 
-        for _, gen in pairs(getGenerators()) do
-            local progress = getGeneratorProgress(gen)
-            local percent = math.floor(progress * 100)
-            local color = Color3.fromRGB(255,255,255):Lerp(Color3.fromRGB(0,255,0), progress)
+        -- ✅ CACHE GENERATORS (tidak cari ulang setiap frame)
+        local gens = getGenerators()
+        for _, gen in pairs(gens) do
+            if gen.Parent then  -- Masih exist
+                local progress = getGeneratorProgress(gen)
+                local percent = math.floor(progress * 100)
+                local color = Color3.fromRGB(255,255,255):Lerp(Color3.fromRGB(0,255,0), progress)
 
-            createGenESP(gen, color, percent)
-
-            -- Update progress text if enabled
-            if progressEnabledCheck and espGenObjects[gen] then
-                espGenObjects[gen].label.Text = percent .. "%"
-                espGenObjects[gen].label.TextColor3 = color
+                createGenESP(gen, color, percent)
+            else
+                removeGenESP(gen)  -- Cleanup hilang
             end
         end
     end)

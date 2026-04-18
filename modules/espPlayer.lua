@@ -84,57 +84,61 @@ end
 local function handlePlayer(plr)
     if plr == player then return end
 
-    if plr.Character and _G.FeatureState and _G.FeatureState.espPlayer then
+    local connections = {}
+    playerConnections[plr] = connections
+
+    if plr.Character then
+        task.wait(0.1)
         setupESP(plr.Character)
     end
 
-    plr.CharacterAdded:Connect(function(char)
+    local charAddedConn = plr.CharacterAdded:Connect(function(char)
         task.wait(0.5)
         if _G.FeatureState and _G.FeatureState.espPlayer then
             setupESP(char)
         end
     end)
+    table.insert(connections, charAddedConn)
 end
 
 -- ==============================================
 -- LOOP UPDATE WARNA (PAKAI TOGGLE)
 -- ==============================================
-RunService.RenderStepped:Connect(function()
+RunService.Heartbeat:Connect(function()  -- ✅ THROTTLE 30fps
     local enabled = _G.FeatureState and _G.FeatureState.espPlayer
 
-    if enabled and not wasEnabled then
-        wasEnabled = true
-        applyESPToAllPlayers()
-    elseif not enabled and wasEnabled then
-        wasEnabled = false
-        removeESPFromAllPlayers()
+    if enabled ~= wasEnabled then
+        wasEnabled = enabled
+        if enabled then
+            applyESPToAllPlayers()
+        else
+            removeESPFromAllPlayers()
+        end
     end
 
-    if not enabled then
-        return
-    end
+    if not enabled then return end
 
+    -- ✅ CACHE: Skip jika sudah benar
     for _, plr in pairs(Players:GetPlayers()) do
         if plr ~= player and plr.Character then
             local h = plr.Character:FindFirstChild("ESP")
             if h then
                 local role = getPlayerRole(plr)
-                
-                -- Debug: cek nilai role yang dikembalikan
-                local colorSet = false
+                local targetColor
                 
                 if role == "KILLER" then
-                    h.FillColor = Color3.fromRGB(255, 0, 0)
-                    colorSet = true
+                    targetColor = Color3.fromRGB(255, 0, 0)
                 elseif role == "SURVIVORS" then
-                    h.FillColor = Color3.fromRGB(0, 170, 255)
-                    colorSet = true
+                    targetColor = Color3.fromRGB(0, 170, 255)
                 elseif role == "SPECTATOR" then
-                    h.FillColor = Color3.fromRGB(255, 255, 255)
-                    colorSet = true
+                    targetColor = Color3.fromRGB(255, 255, 255)
                 else
-                    h.FillColor = Color3.fromRGB(128, 128, 128)
-                    print("[ESP DEBUG] Role tidak dikenali: '" .. role .. "' dari player: " .. plr.Name)
+                    targetColor = Color3.fromRGB(128, 128, 128)
+                end
+
+                -- ✅ OPTIMIZE: Hanya update jika warnanya beda
+                if h.FillColor ~= targetColor then
+                    h.FillColor = targetColor
                 end
             end
         end
@@ -142,13 +146,28 @@ RunService.RenderStepped:Connect(function()
 end)
 
 -- ==============================================
--- INIT PLAYER LISTENER
+-- INIT PLAYER LISTENER + CLEANUP
 -- ==============================================
+local playerConnections = {}
+
+local function cleanupPlayer(plr)
+    if playerConnections[plr] then
+        for _, conn in pairs(playerConnections[plr]) do
+            conn:Disconnect()
+        end
+        playerConnections[plr] = nil
+    end
+end
+
+Players.PlayerRemoving:Connect(cleanupPlayer)  -- ✅ CLEANUP
+
 for _, p in pairs(Players:GetPlayers()) do
     handlePlayer(p)
 end
 
-Players.PlayerAdded:Connect(handlePlayer)
+Players.PlayerAdded:Connect(function(plr)
+    handlePlayer(plr)
+end)
 
 -- ==============================================
 -- GLOBAL

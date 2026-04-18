@@ -26,18 +26,25 @@ local function restoreFOV()
 end
 
 -- LOOP DENGAN CEK TOGGLE
-RunService.RenderStepped:Connect(function()
-    if _G.FeatureState and _G.FeatureState.ipadView then
-        if not wasEnabled then
-            wasEnabled = true
+RunService.Heartbeat:Connect(function()  -- ✅ Throttle 30fps
+    local enabled = _G.FeatureState and _G.FeatureState.ipadView
+    
+    if enabled ~= wasEnabled then
+        wasEnabled = enabled
+        if enabled then
             cacheOriginalFOV()
+        else
+            restoreFOV()
         end
-        if workspace.CurrentCamera and workspace.CurrentCamera.FieldOfView ~= IPAD_FOV then
-            workspace.CurrentCamera.FieldOfView = IPAD_FOV
-        end
-    elseif wasEnabled then
-        wasEnabled = false
-        restoreFOV()
+    end
+    
+    if not enabled or not workspace.CurrentCamera then
+        return
+    end
+    
+    -- ✅ Stabil: set sekali, Roblox maintain
+    if enabled and workspace.CurrentCamera.FieldOfView ~= IPAD_FOV then
+        workspace.CurrentCamera.FieldOfView = IPAD_FOV
     end
 end)
 
