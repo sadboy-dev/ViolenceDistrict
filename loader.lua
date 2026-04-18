@@ -22,35 +22,13 @@ local function formatModuleName(path)
     return name:gsub("^%l", string.upper)
 end
 
-local function safeLoadModule(path, maxRetries)
-    maxRetries = maxRetries or 3
-    
-    -- 1. PRIORITY LOCAL (readfile)
-    local localPath = path
-    local localSuccess = pcall(function()
-        local content = readfile(localPath)
+local function safeLoadModule(path)
+    -- SIMPEL: Local ONLY (fastest, no error)
+    pcall(function()
+        local content = readfile(path)
         loadstring(content)()
+        print("✅ Loaded local: " .. formatModuleName(path))
     end)
-    
-    if localSuccess then
-        print("✅ Local loaded: " .. formatModuleName(path))
-        return true
-    end
-    
-    -- 2. REMOTE FALLBACK
-    for attempt = 1, maxRetries do
-        local remoteSuccess = pcall(function()
-            loadstring(game:HttpGet(baseUrl .. path, true))()
-        end)
-        
-        if remoteSuccess then
-            print("✅ Remote: " .. formatModuleName(path))
-            return true
-        end
-        task.wait(0.5)
-    end
-    
-    error("❌ Cannot load " .. path .. " (local+remote failed)")
 end
 
 -- Load semua modules dengan retry
