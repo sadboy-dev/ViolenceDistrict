@@ -73,7 +73,7 @@ RunService.Heartbeat:Connect(function()
         if check and check.Visible and lastGenPoint and (root.Position - lastGenPoint.Position).Magnitude < 8 then
             skillRemote:FireServer("success", 1, lastGenModel, lastGenPoint)
             check.Visible = false
-            print("[autoGene]: Skillcheck success!")
+            print("🎯 Skillcheck success!")
         end
     end
 end)
@@ -82,7 +82,7 @@ end)
 local function startAutoGene()
     if not _G.FeatureState then _G.FeatureState = {} end
     _G.FeatureState.autoGene = true
-    print("[autoGene]: Ready (waiting for Survivors role)")
+    print("🔧 Auto Gene: Ready")
 end
 
 local function stopAutoGene()
@@ -94,6 +94,5 @@ _G.autoGene = {}
 _G.autoGene.Start = startAutoGene
 _G.autoGene.Stop = stopAutoGene
 
-print("[autoGene]: Loaded - Integrate to main.lua for Survivors toggle")
 return _G.autoGene
 

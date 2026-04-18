@@ -132,7 +132,7 @@ local function startESPGenerator()
 
     _G.FeatureState.espGenerator = true
     applyESPToGenerators()
-    print("[FEATURED]: ESP Generator -> ON")
+    print("🔋 ESP Generator: ON")
 end
 
 local function stopESPGenerator()
@@ -145,7 +145,7 @@ local function stopESPGenerator()
 
     _G.FeatureState.espGenerator = false
     removeESPFromGenerators()
-    print("[FEATURED]: ESP Generator -> OFF")
+    print("🔋 ESP Generator: OFF")
 end
 
 local function startProgressFeature()
@@ -167,7 +167,7 @@ local function startProgressFeature()
         end
     end)
     
-    print("[FEATURED]: Generator Progress -> ON ✅")
+    print("⚡ Generator Progress: ON")
 end
 
 local function stopProgressFeature()
@@ -185,7 +185,7 @@ local function stopProgressFeature()
         end
     end)
     
-    print("[FEATURED]: Generator Progress -> OFF")
+    print("⚡ Generator Progress: OFF")
 end
 
 -- ==============================================

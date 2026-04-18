@@ -63,13 +63,13 @@ local function startBoost()
     end
     _G.FeatureState.ipadView = true
     applyFOV()
-    print("[FEATURED]: Ipad View -> ON")
+    print("📱 Ipad View: ON")
 end
 
 local function stopBoost()
     _G.FeatureState.ipadView = false
     restoreFOV()
-    print("[FEATURED]: Ipad View -> OFF")
+    print("📱 Ipad View: OFF")
 end
 
 _G.ipadView = startBoost

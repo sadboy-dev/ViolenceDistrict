@@ -34,7 +34,7 @@ end
 -- Fungsi utama untuk sortir fitur berdasarkan role
 function _G.SortFeaturesByRole()
     local currentRole = _G.RoleData.IsLobby and "SPECTATOR" or string.upper(_G.RoleData.TeamName or "")
-    print("[TEAM]: " .. currentRole)
+    print("👥 Role: " .. currentRole)
     _G.ResetAllFeatures()  -- Matikan semua fitur dulu setiap role berubah
 
     if currentRole == "SURVIVORS" then
@@ -54,7 +54,7 @@ function _G.SortFeaturesByRole()
         _G.Toggle("espGenerator", true)
         _G.Toggle("generatorProgress", true)
     else
-        print("[DEBUG] Role tidak dikenali: " .. currentRole)
+        print("⚠️ Unknown role: " .. currentRole)
     end
 end
 
@@ -62,7 +62,7 @@ end
 function _G.Toggle(featureName, enabled)
     if _G.FeatureState[featureName] ~= nil then
         _G.FeatureState[featureName] = enabled
-        print("[FEATURED]: " .. formatFeatureName(featureName) .. " -> " .. (enabled and "ON" or "OFF"))
+        print("✨ " .. formatFeatureName(featureName) .. ": " .. (enabled and "ON" or "OFF"))
     else
         warn("❌ Fitur tidak ditemukan: " .. featureName)
     end

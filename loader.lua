@@ -29,7 +29,7 @@ for _, path in ipairs(modulesToLoad) do
     end)
     
     if success then
-        print("✅ Loaded: " .. formatModuleName(path))
+        print("📦 " .. formatModuleName(path))
     else
         warn("❌ Loaded: " .. formatModuleName(path) .. " | Error: " .. tostring(err))
     end
