@@ -25,7 +25,7 @@ local function createNameTag(plr, char)
     
     local bill = Instance.new("BillboardGui")
     bill.Name = "NameTag"
-    bill.Size = UDim2.new(0, 100, 0, 40)  -- Samakan generator
+    bill.Size = UDim2.new(0, 100, 0, 40)
     bill.StudsOffset = Vector3.new(0, 2.5, 0)
     bill.AlwaysOnTop = true
     bill.Parent = head
@@ -33,53 +33,17 @@ local function createNameTag(plr, char)
     local label = Instance.new("TextLabel")
     label.Size = UDim2.new(1, 0, 1, 0)
     label.BackgroundTransparency = 1
-    label.TextScaled = false
-    label.TextSize = 14  -- Samakan generator
+    label.Text = plr.Name
     label.Font = Enum.Font.SourceSansBold
-    label.TextStrokeTransparency = 0
-    label.TextStrokeColor3 = Color3.new(0,0,0)
+    label.TextSize = 14
     label.Parent = bill
     
     return bill, label
 end
 
-local function getPlayerLevel(plr)
-    -- Advanced leaderstats scan
-    local leaderstats = plr:WaitForChild("leaderstats", 3)
-    if leaderstats then
-        for _, stat in ipairs(leaderstats:GetChildren()) do
-            local name = stat.Name:lower()
-            if name:find("level") and (stat:IsA("IntValue") or stat:IsA("NumberValue")) then
-                return math.floor(stat.Value)
-            end
-        end
-    end
-    -- Fallback common names
-    pcall(function()
-        local stats = plr.PlayerGui:FindFirstChild("PlayerFrame", true)
-        if stats then
-            local lvl = stats:FindFirstChild("Level", true)
-            if lvl then return tonumber(lvl.Text:match("%d+")) or 1 end
-        end
-    end)
-    return 1
-end
-
-local playerLevelCache = {}
-local lastLevelUpdate = {}
 
 local function updateNameTag(plr, label)
-    local plrId = plr.UserId
-    local now = tick()
-    
-    -- Cache 2s debounce
-    if not playerLevelCache[plrId] or now - (lastLevelUpdate[plrId] or 0) > 2 then
-        playerLevelCache[plrId] = getPlayerLevel(plr)
-        lastLevelUpdate[plrId] = now
-    end
-    
-    local level = playerLevelCache[plrId] or 1
-    label.Text = string.format("[LVL %d] %s", level, plr.Name)
+    label.Text = plr.Name
 end
 
 local function setupESP(char)
@@ -247,15 +211,12 @@ end)
 local playerConnections = {}
 
 local function cleanupPlayer(plr)
-    local plrId = plr.UserId
     if playerConnections[plr] then
         for _, conn in pairs(playerConnections[plr]) do
             conn:Disconnect()
         end
         playerConnections[plr] = nil
     end
-    playerLevelCache[plrId] = nil  -- ✅ Cleanup cache
-    lastLevelUpdate[plrId] = nil
 end
 
 Players.PlayerRemoving:Connect(cleanupPlayer)  -- ✅ CLEANUP

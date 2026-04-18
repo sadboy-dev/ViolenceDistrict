@@ -38,6 +38,16 @@
 
 **Files diupdate:** Semua 6 files ✅
 
+# NEW TASK: Fix espPlayer.lua - Remove level display
 
+## Goal: Hapus fungsi level player, cukup nama saja dan ESP highlights.
 
+### Steps:
+1. [x] Remove level cache variables and getPlayerLevel logic.
+2. [x] Simplify createNameTag: label.Text = plr.Name only.
+3. [x] Replace updateNameTag: label.Text = plr.Name only.
+4. [x] Update Heartbeat loop: name only, role colors preserved.
+5. [x] Remove all level cache references.
+6. [x] ESP verified: highlights + colored name tags working, no levels.
+7. [x] Task complete ✅
 
