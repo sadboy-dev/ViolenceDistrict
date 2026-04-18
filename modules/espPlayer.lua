@@ -94,8 +94,18 @@ local function setupESP(char)
     h.OutlineTransparency = 0
     h.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
     h.Parent = char
-end
 
+    -- Check if plr.Character is not nil before accessing its properties
+    if char and char:FindFirstChild("Head") then
+        local headTag = char:FindFirstChild("Head"):FindFirstChild("NameTag")
+        if headTag then
+            local label = headTag:FindFirstChild("TextLabel")
+            if label then
+                -- Rest of your code here
+            end
+        end
+    end
+end
 local function removeESP(char)
     if char then
         local h = char:FindFirstChild("ESP")
