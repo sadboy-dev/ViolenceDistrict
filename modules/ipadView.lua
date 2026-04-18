@@ -2,7 +2,7 @@ local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
-local IPAD_FOV = 100
+local IPAD_FOV = 120
 local originalFOV = nil
 local wasEnabled = false
 
