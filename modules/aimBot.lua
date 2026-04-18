@@ -87,7 +87,7 @@ local function updateAim()
     if now - lastUpdate < UPDATE_RATE then return end
     lastUpdate = now
     
-if not _G.FeatureState or not _G.FeatureState.aimBot then 
+    if not _G.FeatureState or not _G.FeatureState.aimBot then 
         if lastTarget then
             lastTarget = nil
         end
@@ -100,8 +100,10 @@ if not _G.FeatureState or not _G.FeatureState.aimBot then
         print("🎯 Aimbot locked:", target.Parent.Name)
     end
     
-    if target then
-        camera.CFrame = CFrame.lookAt(camera.CFrame.Position, target.Position)
+    if target and lastTarget == target then
+        -- Smooth lerp no shake
+        local targetCFrame = CFrame.lookAt(camera.CFrame.Position, target.Position)
+        camera.CFrame = camera.CFrame:Lerp(targetCFrame, 0.3)
     end
 end
 
