@@ -38,21 +38,25 @@ local function cleanupCrosshair()
 end
 
 local function createCrosshair()
-    if cleanupCrosshair then
-        cleanupCrosshair()
-    end
+    cleanupCrosshair()
     screenGui = _InstanceNew("ScreenGui")
-    screenGui.Name = "IpadCrosshair"
     screenGui.IgnoreGuiInset = true
     screenGui.Parent = game.CoreGui -- Always on top
     
-    crosshairLabel = _InstanceNew("Frame")
-    crosshairLabel.AnchorPoint = _Vector2New(0.5, 0.5)
-    crosshairLabel.Size = _UDim2New(0, 6, 0, 6)
-    crosshairLabel.Position = _UDim2New(0.5, 0, 0.5, 0)
-    crosshairLabel.BackgroundTransparency = 1
+    crosshairLabel = Instance.new("Frame")
+    crosshairLabel.Name = "IpadCrosshair"
+    crosshairLabel.Size = UDim2.new(0, 5, 0, 5)
+    crosshairLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+    crosshairLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+    crosshairLabel.BackgroundColor3 = Color3.new(1, 1, 1)
+    crosshairLabel.BackgroundTransparency = 0.3
     crosshairLabel.BorderSizePixel = 0
-    crosshairLabel.BackgroundColor3 = _Color3FromRGB(255, 255, 0)
+    crosshairLabel.Visible = CrosshairVisible
+    crosshairLabel.Parent = screenGui
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(1, 0)
+    corner.Parent = crosshairLabel
 end
 
 local function restoreFOV()
