@@ -23,35 +23,34 @@ local function formatModuleName(path)
 end
 
 local function safeLoadModule(path, maxRetries)
-    -- ✅ PRIORITY: Local files first!
-    local localPath = "modules/" .. path:match("modules/(.+)")
+    maxRetries = maxRetries or 3
     
-    -- Try local first (silent)
-    local success = pcall(function()
-        loadstring(game:HttpGet("file://" .. game:GetService("HttpService"):GenerateGUID(false) .. localPath))()  -- Dummy untuk local
-        -- Actually use require or load local
-        loadstring(readfile(localPath))()
+    -- 1. PRIORITY LOCAL (readfile)
+    local localPath = path
+    local localSuccess = pcall(function()
+        local content = readfile(localPath)
+        loadstring(content)()
     end)
     
-    if success then
-        print("✅ Local: " .. formatModuleName(path))
+    if localSuccess then
+        print("✅ Local loaded: " .. formatModuleName(path))
         return true
     end
     
-    -- Fallback remote (no spam)
+    -- 2. REMOTE FALLBACK
     for attempt = 1, maxRetries do
-        local remoteSuccess, result = pcall(function()
-            return loadstring(game:HttpGet(baseUrl .. path, true))()
+        local remoteSuccess = pcall(function()
+            loadstring(game:HttpGet(baseUrl .. path, true))()
         end)
         
         if remoteSuccess then
             print("✅ Remote: " .. formatModuleName(path))
             return true
         end
+        task.wait(0.5)
     end
     
-    print("ℹ️ Used local fallback: " .. formatModuleName(path))
-    return true  -- Always success local
+    error("❌ Cannot load " .. path .. " (local+remote failed)")
 end
 
 -- Load semua modules dengan retry
