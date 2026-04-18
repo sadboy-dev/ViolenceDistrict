@@ -74,9 +74,7 @@ RunService.Heartbeat:Connect(function()
             createCrosshair()
         else
             restoreFOV()
-            if cleanupCrosshair then
-                cleanupCrosshair()
-            end
+            cleanupCrosshair()
         end
         return
     end
