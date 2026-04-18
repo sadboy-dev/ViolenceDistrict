@@ -5,22 +5,17 @@ _G.FeatureState = _G.FeatureState or {
     espPlayer = false,
     espGenerator = false,
     generatorProgress = false,
-    autoGene = false,  -- ✅ Auto generator skillcheck
-    boostFps = false,
-    crosshair = false,
+    autoGene = false
 }
 
-if not _G.RoleData or not _G.RoleUpdate then
-    warn("⚠️ getRole.lua belum ready, tunggu...")
-    -- ✅ Jangan error, tunggu saja
-    task.spawn(function()
-        while not _G.RoleData do
-            task.wait(0.5)
-        end
-        _G.SortFeaturesByRole()
-    end)
-    return
-end
+-- Skip check, getRole auto-run
+_G.FeatureState = _G.FeatureState or {
+    ipadView = false,
+    espPlayer = false,
+    espGenerator = false,
+    generatorProgress = false,
+    autoGene = false
+}
 
 local function formatFeatureName(name)
     return name:gsub("(%l)(%u)", "%1 %2"):gsub("^%l", string.upper)
