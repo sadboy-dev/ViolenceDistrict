@@ -57,14 +57,19 @@ local function raycastClear(origin, targetPos)
 end
 
 local function findTarget()
-    local role = getRole()
-    if role == "SPECTATOR" then return nil end
-    
-    local closestTarget = nil
-    local closestDist = MAX_RANGE
-    
-    for _, plr in pairs(Players:GetPlayers()) do
-        if plr ~= player and isValidTarget(plr) then
+        local role = getRole()
+        if role == "SPECTATOR" then return nil end
+        
+        local char = player.Character
+        if not char then return nil end
+        local hum = char:FindFirstChild("Humanoid")
+        if hum and (hum:GetAttribute("Carrying") or hum.Sit or hum.PlatformStand) then return nil end -- Disable when carrying
+        
+        local closestTarget = nil
+        local closestDist = MAX_RANGE
+        
+        for _, plr in pairs(Players:GetPlayers()) do
+            if plr ~= player and isValidTarget(plr) then
             local char = plr.Character
             if char then
                 targetPart = char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso") or char:FindFirstChild("HumanoidRootPart")
