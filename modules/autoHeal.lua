@@ -20,13 +20,14 @@ local function getHealth(plr)
 end
 
 local function getClosestLowHealthTeammate(root)
-    local closest, closestDist = nil, 6
+local closest, closestDist = nil, math.huge
+    -- Priority: Lowest HP first
     for _, plr in ipairs(Players:GetPlayers()) do
         if plr ~= player and plr.Team == player.Team and plr.Character then
             local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
             if hrp then
                 local hp = getHealth(plr)
-                if hp <= 60 then
+if hp <= 50 then
                     local dist = (root.Position - hrp.Position).Magnitude
                     if dist < closestDist then
                         closest = plr
@@ -58,10 +59,7 @@ RunService.Heartbeat:Connect(function()
         return 
     end
 
-    local target = getClosestLowHealthTeammate(root)
-    if target and not lastHealTarget then
-        lastHealTarget = target
-    end
+    lastHealTarget = getClosestLowHealthTeammate(root)
 
     local gui = playerGui:FindFirstChild("SkillCheckPromptGui")
     if gui then
@@ -69,7 +67,7 @@ RunService.Heartbeat:Connect(function()
         if check and check.Visible then
             if lastHealTarget then
                 local hp = getHealth(lastHealTarget)
-                if hp <= 60 then
+if hp <= 50 then
                     local targetChar = lastHealTarget.Character
                     if targetChar then
                         healRemote:FireServer("success", 1, targetChar)

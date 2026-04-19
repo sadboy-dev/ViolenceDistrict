@@ -42,7 +42,8 @@ local function createGenESP(obj, color, percent)
         label.TextSize = 14
         label.Font = Enum.Font.SourceSansBold
         label.TextStrokeTransparency = 0
-        label.Text = progressEnabled and (percent .. "%") or ""
+        label.Text = (_G.FeatureState and _G.FeatureState.generatorProgress) and (percent .. "%") or ""
+
         label.TextColor3 = color
         label.Parent = bill
 
